@@ -1,0 +1,36 @@
+- hosts: containerdKubernetes
+  tasks:
+    #########################################
+    #                                       #
+    #   Stop running container if exist     #
+    #                                       #
+    #########################################
+
+    # variable app
+    - name: check app existance
+      command : /bin/sh -c "helm ls | awk '{print $1 }' |grep -w  {{projectName}}-{{env}}"
+      register: app
+      ignore_errors: yes
+
+    # stop app
+    - name: stop project
+      command: /bin/sh -c "helm delete {{projectName}}-{{env}}"
+      when: app.stdout == "{{projectName}}-{{env}}"
+      register: isStopped
+
+
+    # variable terminated pod   
+    - name: check if pod  is terminating 
+      command : /bin/sh -c " kubectl get pods -n {{projectName}} | grep Terminating | awk '{print $1}' "
+      register: podTerminated   
+      ignore_errors: yes 
+  
+    # delete terminated pod
+    - name: delete terminated  pod
+      command : /bin/sh -c "kubectl delete pod --grace-period=0 --force --namespace {{projectName}} $(kubectl get pods -n {{projectName}} | grep Terminating | awk '{print $1}') "
+      when:  not podTerminated.stdout == ""
+      register: isStopped
+
+    - name: waiting container to stop
+      pause: seconds=60
+      when: isStopped is succeeded or app.stdout == "{{projectName}}-{{env}}"

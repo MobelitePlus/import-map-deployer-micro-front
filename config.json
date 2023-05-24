@@ -1,0 +1,52 @@
+{
+  "urlSafeList": {
+    "default" :  [
+      "http://localhost",
+      "https://cdnjs.cloudflare.com",
+      "https://unpkg.com"
+    ],
+    "itg" :  [
+      "http://localhost",
+      "https://cdnjs.cloudflare.com",
+      "https://unpkg.com",
+      "http://192.168.66.212",
+      "https://192.168.66.212"
+    ],
+    "rec" :  [
+      "https://cdnjs.cloudflare.com",
+      "https://unpkg.com",
+      "http://192.168.66.212",
+      "https://192.168.66.212"
+    ],
+    "prod" :  [
+      "https://cdnjs.cloudflare.com",
+      "https://unpkg.com"
+    ]
+  },
+  "requireAuth": true,
+  "credential": {
+    "default": {
+      "username": "admin",
+      "password": "81dc9bdb52d04dc20036dbd8313ed055"
+    },
+    "itg": {
+      "username": "admin",
+      "password": "81dc9bdb52d04dc20036dbd8313ed055"
+    },
+    "rec": {
+      "username": "admin",
+      "password": "81dc9bdb52d04dc20036dbd8313ed055"
+    },
+    "prod": {
+      "username": "admin",
+      "password": "4992b76b20521eaf5ed8e4357a59f95f"
+    }
+  },
+  "manifestFormat": "importmap",
+  "locations": {
+    "default": "config/import-map.json",
+    "itg": "config/import-map-itg.json",
+    "rec": "config/import-map-rec.json",
+    "prod": "config/import-map-prod.json"
+  }
+}

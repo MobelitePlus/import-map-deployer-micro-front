@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "@sifast/app1": "http://localhost:4201/main.js",
+    "@sifast/app2": "http://localhost:4202/main.js",
+    "@sifast/navbar": "http://localhost:4300/main.js",
+    "single-spa": "https://cdnjs.cloudflare.com/ajax/libs/single-spa/5.5.0/system/single-spa.min.js",
+    "single-spa-layout": "https://unpkg.com/single-spa-layout@1.0.0-beta.2/dist/system/single-spa-layout.min.js",
+    "@sifast/rec": "http://localhost:4203/main.js"
+  }
+}

@@ -1,0 +1,47 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.app_NAME}}
+  namespace: {{.Values.space_NAME}}
+  labels:
+    app: {{.Values.app_NAME}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{.Values.app_NAME}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.app_NAME}}
+    spec:
+      containers:
+        - image: {{.Values.repoSifast}}{{.Values.imageName}}
+          name: {{.Values.app_NAME}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - mountPath: /www/config
+              name: config-{{.Values.app_NAME}}-volume
+          resources:
+            requests:
+              memory: "250Mi"
+            limits:
+              memory: "500Mi"
+      volumes:
+        - name: config-{{.Values.app_NAME}}-volume
+          persistentVolumeClaim:
+            claimName: config-{{.Values.app_NAME}}-volume
+      imagePullSecrets:
+        - name: docker-credentials-{{.Values.app_NAME}}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: sifast-devops
+                  operator: In
+                  values:
+                  - {{.Values.devops_label}}

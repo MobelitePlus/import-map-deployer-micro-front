@@ -1,0 +1,82 @@
+"use strict";
+const config = require("./config.js").getConfig();
+const getEmptyManifest = require("./modify").getEmptyManifest;
+
+let readManifest, writeManifest, credential, isAuthRequired;
+if (config) {
+  if (
+    typeof config.readManifest === "function" &&
+    typeof config.writeManifest === "function"
+  ) {
+    readManifest = function (env) {
+      const promise = config.readManifest(env);
+      if (!(promise instanceof Promise))
+        throw new Error(
+          `Configuration file provided invalid readManifest function -- expected a Promise to be returned`
+        );
+      return promise;
+    };
+
+    writeManifest = function (string, env) {
+      const promise = config.writeManifest(string, env);
+      if (!(promise instanceof Promise))
+        throw new Error(
+          `Configuration file provided invalid writeManifest function -- expected a Promise to be returned`
+        );
+      return promise;
+    };
+  } else if (config.readManifest || config.writeManifest) {
+    throw new Error(
+      `Invalid config file -- readManifest and writeManifest should both be functions`
+    );
+  } else {
+    useDefaultIOMethod();
+  }
+} else {
+  useDefaultIOMethod();
+}
+
+if (config) {
+  if (
+    typeof config.credential === "object" ||
+    config.credential === undefined
+  ) {
+    credential = config.credential;
+    isAuthRequired = config.requireAuth;
+  } else {
+    throw new Error(
+      `Invalid config file -- username and password should either be object or missing completely`
+    );
+  }
+}
+
+function useDefaultIOMethod() {
+  const defaultIOMethod = require("./io-methods/default.js");
+  readManifest = defaultIOMethod.readManifest;
+  writeManifest = defaultIOMethod.writeManifest;
+}
+
+exports.readManifest = (env) => {
+  return new Promise((resolve, reject) => {
+    readManifest(env)
+      .then((manifest) => {
+        if (manifest === "") {
+          manifest = JSON.stringify(getEmptyManifest());
+        }
+        resolve(manifest);
+      })
+      .catch((ex) => {
+        reject(ex);
+      });
+  });
+};
+
+// Override username and password if both env vars are set
+// if (process.env.IMD_USERNAME && process.env.IMD_PASSWORD) {
+//  username = process.env.IMD_USERNAME;
+//  password = process.env.IMD_PASSWORD;
+// }
+
+exports.writeManifest = writeManifest;
+exports.credential = credential;
+exports.isAuthRequired = isAuthRequired;

@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "@plateforme-sifast/root-app": "http://192.168.66.212:31609/main.js"
+  }
+}

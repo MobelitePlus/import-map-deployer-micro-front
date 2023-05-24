@@ -1,0 +1,7 @@
+repoSifast: nexus.sifast.com:8087/
+imageName: import-map-deployer-micro-front:1.0
+app_NAME: import-map-deployer-micro-front-app
+space_NAME: import-map-deployer-micro-front
+app_PORT: 31602
+app_env: app
+devops_label: projects
